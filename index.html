@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Dota 2 Boost</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="box">
+  <h2>Dota 2 Boost</h2>
+
+  <select id="type">
+    <option value="mmr">MMR Boost</option>
+    <option value="party">Party Boost</option>
+    <option value="calib">Calibration</option>
+  </select>
+
+  <input id="from" type="number" value="3000">
+  <input id="to" type="number" value="500">
+
+  <label><input type="checkbox" id="doubles"> Doubles</label>
+  <label><input type="checkbox" id="share"> Account Share</label>
+  <label><input type="checkbox" id="lowConfidence"> Low Confidence</label>
+
+  <input id="margin" type="number" value="25">
+
+  <button id="calc">Рассчитать</button>
+
+  <div id="result"></div>
+</div>
+
+<script src="config.js"></script>
+<script src="calc.js"></script>
+<script>
+document.getElementById("calc").onclick = () => {
+  const res = calculate({
+    type: type.value,
+    from: +from.value,
+    to: +to.value,
+    doubles: doubles.checked,
+    share: share.checked,
+    lowConfidence: lowConfidence.checked,
+    margin: +margin.value / 100
+  });
+
+  result.innerHTML = `
+    Клиент: <b>${res.client} ₽</b><br>
+    Бустеру: ${res.booster} ₽<br>
+    Твоя прибыль: ${res.profit} ₽
+  `;
+};
+</script>
+</body>
+</html>
