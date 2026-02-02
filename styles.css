@@ -1,0 +1,120 @@
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== BASE ===== */
+body {
+  min-height: 100vh;
+  background: #0b0d10;
+  color: #e6e6e6;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== CARD ===== */
+.box {
+  width: 100%;
+  max-width: 380px;
+  background: #14171c;
+  border-radius: 14px;
+  padding: 22px 20px 24px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.45),
+    inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+/* ===== TITLE ===== */
+.box h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  letter-spacing: 0.3px;
+}
+
+/* ===== FORM ===== */
+label {
+  display: block;
+  font-size: 13px;
+  color: #a8b0bd;
+  margin: 12px 0 4px;
+}
+
+input,
+select {
+  width: 100%;
+  background: #0f1216;
+  color: #fff;
+  border: 1px solid #242933;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .15s, background .15s;
+}
+
+input:focus,
+select:focus {
+  border-color: #3b82f6;
+  background: #11151a;
+}
+
+/* ===== CHECKBOXES ===== */
+label input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+  accent-color: #3b82f6;
+}
+
+/* ===== BUTTON ===== */
+button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(59,130,246,0.35);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* ===== RESULT ===== */
+#result {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #0f1216;
+  border: 1px solid #242933;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+#result b {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 420px) {
+  .box {
+    margin: 16px;
+    padding: 18px;
+  }
+}
