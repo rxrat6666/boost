@@ -23,6 +23,12 @@
   <label><input type="checkbox" id="share"> Account Share</label>
   <label><input type="checkbox" id="lowConfidence"> Low Confidence</label>
 
+  <div class="flags">
+    <div class="flag doubles" id="flag-doubles">Даблы</div>
+    <div class="flag calib" id="flag-calib">Калибровка</div>
+    <div class="flag share" id="flag-share">Передача</div>
+    <div class="flag lowconf" id="flag-lowconf">Low confidence</div>
+  </div>
   <input id="margin" type="number" value="25">
 
   <button id="calc">Рассчитать</button>
@@ -33,6 +39,9 @@
 <script src="config.js"></script>
 <script src="calc.js"></script>
 <script>
+function toggleFlag(id, state) {
+  document.getElementById(id).classList.toggle("active", state);
+}
 document.getElementById("calc").onclick = () => {
   const res = calculate({
     type: type.value,
@@ -43,11 +52,14 @@ document.getElementById("calc").onclick = () => {
     lowConfidence: lowConfidence.checked,
     margin: +margin.value / 100
   });
-
+toggleFlag("flag-doubles", doubles.checked);
+toggleFlag("flag-calib", type.value === "calib");
+toggleFlag("flag-share", share.checked);
+toggleFlag("flag-lowconf", lowConfidence.checked);
   result.innerHTML = `
-    Клиент: <b>${res.client} ₽</b><br>
-    Бустеру: ${res.booster} ₽<br>
-    Твоя прибыль: ${res.profit} ₽
+    <div class="line"><span>Клиент</span><b>${res.client} ₽</b></div>
+    <div class="line"><span>Бустеру</span><span>${res.booster} ₽</span></div>
+    <div class="line"><span>Твоя прибыль</span><span class="profit">${res.profit} ₽</span></div>
   `;
 };
 </script>

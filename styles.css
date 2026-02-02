@@ -118,3 +118,60 @@ button:active {
     padding: 18px;
   }
 }
+/* ===== FLAGS / BADGES ===== */
+.flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.flag {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  background: #0f1216;
+  border: 1px solid #242933;
+  color: #a8b0bd;
+}
+
+/* Активные состояния */
+.flag.active {
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Семантика */
+.flag.doubles.active {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+}
+
+.flag.calib.active {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.flag.share.active {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.flag.lowconf.active {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* ===== RESULT HIGHLIGHT ===== */
+#result .line {
+  display: flex;
+  justify-content: space-between;
+}
+
+#result .profit {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+#result .warn {
+  color: #f59e0b;
+}
+
