@@ -1,8 +1,13 @@
-// === ОБЩИЕ НАСТРОЙКИ ===
-const FANPAY_COEFF = 1.08;
-const DEFAULT_MARGIN = 0.25; // 25%
+// ===============================
+// ОБЩИЕ НАСТРОЙКИ
+// ===============================
+const FANPAY_COEFF = 1.08;   // комиссия FanPay
+const DEFAULT_MARGIN = 0.25; // 25% твоя маржа (можно менять из UI)
 
-// === MMR BOOST (руб за 100 ммр) ===
+// ===============================
+// MMR BOOST (передача аккаунта)
+// цена за 100 MMR
+// ===============================
 const MMR_FIXES = [
   { from: 0, to: 2000, price: 125 },
   { from: 2000, to: 3000, price: 150 },
@@ -22,8 +27,11 @@ const MMR_FIXES = [
   { from: 10500, to: 11000, price: 2000 }
 ];
 
-// === PARTY / CALIB (руб за win) ===
-const WIN_FIXES = [
+// ===============================
+// PARTY BOOST (игра с клиентом)
+// цена за победу
+// ===============================
+const PARTY_FIXES = [
   { from: 0, to: 2000, price: 55 },
   { from: 2000, to: 3000, price: 65 },
   { from: 3000, to: 3500, price: 75 },
@@ -34,19 +42,24 @@ const WIN_FIXES = [
   { from: 5500, to: 6000, price: 200 },
   { from: 6000, to: 6500, price: 300 },
   { from: 6500, to: 7000, price: 400 },
-  { from: 7000, to: 8500, price: 480 },
+  { from: 7000, to: 8500, price: 480 }, // с даблами = 600
   { from: 8500, to: 9500, price: 700 },
   { from: 9500, to: 10000, price: 800 }
 ];
 
-// === МОДИФИКАТОРЫ ===
+// ===============================
+// МОДИФИКАТОРЫ
+// ===============================
 const MODIFIERS = {
-  doublesMMR7700: 1.30,
-  partyDoubles5620: 1.30,
-  calibAlways: 1.50,
+  // MMR Boost (передача)
+  mmrDoublesUnder7700: 0.75, // -25%
+  mmrDoublesOver7700: 0.70,  // -30%
 
-  shareUnder7700: 0.75,
-  shareOver7700: 0.70,
+  // Party Boost
+  partyDoublesUnder5620: 1.50, // +50%
+  partyDoubles5620to7000: 1.30, // +30%
+  partyDoubles7000to8500: 600,  // фикс за win
 
-  lowConfidence: 0.90
+  // Общие
+  lowConfidence: 0.90 // -10%
 };

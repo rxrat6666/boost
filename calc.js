@@ -1,55 +1,105 @@
+// ===============================
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ===============================
+
 function getFix(mmr, table) {
-  return table.find(r => mmr >= r.from && mmr < r.to)?.price || 0;
+  const row = table.find(r => mmr >= r.from && mmr < r.to);
+  return row ? row.price : 0;
 }
 
-function calcMMR(from, to) {
-  let sum = 0;
-  for (let r of MMR_FIXES) {
-    const a = Math.max(from, r.from);
-    const b = Math.min(to, r.to);
-    if (b > a) {
-      sum += ((b - a) / 100) * r.price;
+// ===============================
+// РАСЧЁТ MMR BOOST (передача)
+// ===============================
+
+function calcMMRBoost(from, to, doubles) {
+  let base = 0;
+
+  for (const r of MMR_FIXES) {
+    const start = Math.max(from, r.from);
+    const end = Math.min(to, r.to);
+
+    if (end > start) {
+      base += ((end - start) / 100) * r.price;
     }
   }
-  return sum;
+
+  let booster = base;
+
+  if (doubles) {
+    booster *= from < 7700
+      ? MODIFIERS.mmrDoublesUnder7700
+      : MODIFIERS.mmrDoublesOver7700;
+  }
+
+  return {
+    fix: Math.round(base),
+    booster: Math.round(booster)
+  };
 }
 
+// ===============================
+// РАСЧЁТ PARTY BOOST (игра с клиентом)
+// ===============================
+
+function calcPartyBoost(mmr, wins, doubles) {
+  let basePerWin = getFix(mmr, PARTY_FIXES);
+  let base = basePerWin * wins;
+  let booster = base;
+
+  if (doubles) {
+    if (mmr < 5620) {
+      booster = base * MODIFIERS.partyDoublesUnder5620;
+    } else if (mmr < 7000) {
+      booster = base * MODIFIERS.partyDoubles5620to7000;
+    } else if (mmr < 8500) {
+      booster = MODIFIERS.partyDoubles7000to8500 * wins;
+    }
+  }
+
+  return {
+    fix: Math.round(base),
+    booster: Math.round(booster)
+  };
+}
+
+// ===============================
+// ГЛАВНЫЙ РАСЧЁТ
+// ===============================
+
 function calculate(data) {
+  let fix = 0;
   let booster = 0;
 
   if (data.type === "mmr") {
-    booster = calcMMR(data.from, data.to);
-    if (data.doubles && data.from >= 7700)
-      booster *= MODIFIERS.doublesMMR7700;
+    const res = calcMMRBoost(data.from, data.to, data.doubles);
+    fix = res.fix;
+    booster = res.booster;
   }
 
-  if (data.type !== "mmr") {
-    booster = getFix(data.from, WIN_FIXES) * data.to;
-
-    if (data.type === "party" &&
-        data.doubles &&
-        data.from >= 5620 && data.from < 7000)
-      booster *= MODIFIERS.partyDoubles5620;
-
-    if (data.type === "calib")
-      booster *= MODIFIERS.calibAlways;
-
-    if (data.share && data.doubles) {
-      booster *= data.from < 7700
-        ? MODIFIERS.shareUnder7700
-        : MODIFIERS.shareOver7700;
-    }
+  if (data.type === "party") {
+    const res = calcPartyBoost(data.from, data.to, data.doubles);
+    fix = res.fix;
+    booster = res.booster;
   }
 
-  if (data.lowConfidence)
+  // low confidence (для party)
+  if (data.lowConfidence && data.type === "party") {
     booster *= MODIFIERS.lowConfidence;
+  }
 
-  const client =
-    booster * FANPAY_COEFF * (1 + data.margin);
+  booster = Math.round(booster);
+
+  // FanPay
+  const fanpayCost = booster * FANPAY_COEFF;
+
+  // Цена клиенту
+  const client = fanpayCost * (1 + data.margin);
 
   return {
+    fix: Math.round(fix),
     booster: Math.round(booster),
+    fanpay: Math.round(fanpayCost),
     client: Math.round(client),
-    profit: Math.round(client - booster * FANPAY_COEFF)
+    profit: Math.round(client - fanpayCost)
   };
 }

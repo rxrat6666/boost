@@ -1,67 +1,95 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Dota 2 Boost</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Dota 2 Boost Calculator</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="box">
   <h2>Dota 2 Boost</h2>
 
+  <!-- Тип услуги -->
+  <label>Тип буста</label>
   <select id="type">
-    <option value="mmr">MMR Boost</option>
-    <option value="party">Party Boost</option>
-    <option value="calib">Calibration</option>
+    <option value="mmr">MMR Boost (передача аккаунта)</option>
+    <option value="party">Party Boost (игра с клиентом)</option>
   </select>
 
-  <input id="from" type="number" value="3000">
-  <input id="to" type="number" value="500">
+  <!-- Входные данные -->
+  <label>Текущий MMR</label>
+  <input id="from" type="number" value="3000" min="0">
 
-  <label><input type="checkbox" id="doubles"> Doubles</label>
-  <label><input type="checkbox" id="share"> Account Share</label>
-  <label><input type="checkbox" id="lowConfidence"> Low Confidence</label>
+  <label id="to-label">Целевой MMR / Победы</label>
+  <input id="to" type="number" value="500" min="1">
 
-  <div class="flags">
-    <div class="flag doubles" id="flag-doubles">Даблы</div>
-    <div class="flag calib" id="flag-calib">Калибровка</div>
-    <div class="flag share" id="flag-share">Передача</div>
-    <div class="flag lowconf" id="flag-lowconf">Low confidence</div>
-  </div>
-  <input id="margin" type="number" value="25">
+  <!-- Опции -->
+  <label>
+    <input type="checkbox" id="doubles">
+    Даблы
+  </label>
+
+  <label>
+    <input type="checkbox" id="lowConfidence">
+    Low confidence (только Party)
+  </label>
+
+  <!-- Маржа -->
+  <label>Твоя маржа (%)</label>
+  <input id="margin" type="number" value="25" min="0">
 
   <button id="calc">Рассчитать</button>
 
+  <!-- Результат -->
   <div id="result"></div>
 </div>
 
 <script src="config.js"></script>
 <script src="calc.js"></script>
 <script>
-function toggleFlag(id, state) {
-  document.getElementById(id).classList.toggle("active", state);
-}
-document.getElementById("calc").onclick = () => {
-  const res = calculate({
-    type: type.value,
-    from: +from.value,
-    to: +to.value,
-    doubles: doubles.checked,
-    share: share.checked,
-    lowConfidence: lowConfidence.checked,
-    margin: +margin.value / 100
-  });
-toggleFlag("flag-doubles", doubles.checked);
-toggleFlag("flag-calib", type.value === "calib");
-toggleFlag("flag-share", share.checked);
-toggleFlag("flag-lowconf", lowConfidence.checked);
-  result.innerHTML = `
-    <div class="line"><span>Клиент</span><b>${res.client} ₽</b></div>
-    <div class="line"><span>Бустеру</span><span>${res.booster} ₽</span></div>
-    <div class="line"><span>Твоя прибыль</span><span class="profit">${res.profit} ₽</span></div>
-  `;
-};
+  const typeEl = document.getElementById("type");
+  const fromEl = document.getElementById("from");
+  const toEl = document.getElementById("to");
+  const doublesEl = document.getElementById("doubles");
+  const lowEl = document.getElementById("lowConfidence");
+  const marginEl = document.getElementById("margin");
+  const resultEl = document.getElementById("result");
+  const toLabel = document.getElementById("to-label");
+
+  // Меняем подпись поля "to" в зависимости от типа
+  typeEl.onchange = () => {
+    if (typeEl.value === "mmr") {
+      toLabel.innerText = "Целевой MMR";
+      lowEl.checked = false;
+      lowEl.disabled = true;
+    } else {
+      toLabel.innerText = "Количество побед";
+      lowEl.disabled = false;
+    }
+  };
+
+  typeEl.onchange(); // инициализация
+
+  document.getElementById("calc").onclick = () => {
+    const res = calculate({
+      type: typeEl.value,
+      from: +fromEl.value,
+      to: +toEl.value,
+      doubles: doublesEl.checked,
+      lowConfidence: lowEl.checked,
+      margin: +marginEl.value / 100
+    });
+
+    resultEl.innerHTML = `
+      <div class="line"><span>Фикс</span><span>${res.fix} ₽</span></div>
+      <div class="line"><span>Бустеру</span><span>${res.booster} ₽</span></div>
+      <div class="line warn"><span>Расходы (FanPay)</span><span>${res.fanpay} ₽</span></div>
+      <div class="line"><span>Клиенту</span><b>${res.client} ₽</b></div>
+      <div class="line profit"><span>Твоя прибыль</span><span>${res.profit} ₽</span></div>
+    `;
+  };
 </script>
+
 </body>
 </html>
