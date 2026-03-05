@@ -25,7 +25,7 @@ body {
 =============================== */
 .box {
   width: 100%;
-  max-width: 420px;
+  max-width: 560px;
   background: #2a2c33;
   border-radius: 14px;
   padding: 22px;
@@ -132,6 +132,12 @@ button:active {
   margin-bottom: 0;
 }
 
+.line.small {
+  opacity: 0.75;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
 /* семантика */
 .warn {
   color: #fbbf24;
@@ -145,6 +151,49 @@ button:active {
 #result b {
   color: #93c5fd;
   font-weight: 600;
+}
+
+/* ===============================
+   EXTRA UI
+=============================== */
+.opt {
+  margin-top: 6px;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.12);
+  margin: 18px 0;
+}
+
+.muted {
+  opacity: 0.75;
+  font-size: 13px;
+  margin: 8px 0 10px;
+  line-height: 1.35;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.cardTitle {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+@media (max-width: 720px) {
+  .grid2 { grid-template-columns: 1fr; }
 }
 
 /* ===============================

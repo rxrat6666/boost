@@ -15,25 +15,53 @@
   <select id="type">
     <option value="mmr">MMR Boost (передача аккаунта)</option>
     <option value="party">Party Boost (игра с клиентом)</option>
+    <option value="calib">Калибровка (передача аккаунта)</option>
+    <option value="lp">Отмыв Low Priority</option>
+    <option value="behavior">Поднятие порядочности</option>
+  </select>
+
+  <!-- Категория FanPay -->
+  <label>Категория FanPay (комиссия разная)</label>
+  <select id="category">
+    <option value="education">Обучение</option>
+    <option value="boost" selected>Буст</option>
   </select>
 
   <!-- Входные данные -->
-  <label>Текущий MMR</label>
+  <label id="from-label">Текущий MMR</label>
   <input id="from" type="number" value="3000" min="0">
 
   <label id="to-label">Целевой MMR / Победы</label>
   <input id="to" type="number" value="500" min="1">
 
   <!-- Опции -->
-  <label>
-    <input type="checkbox" id="doubles">
-    Даблы
-  </label>
+  <div id="opt-doubles" class="opt">
+    <label>
+      <input type="checkbox" id="doubles">
+      Даблы
+    </label>
+  </div>
 
-  <label>
-    <input type="checkbox" id="lowConfidence">
-    Low confidence (только Party)
-  </label>
+  <div id="opt-low" class="opt">
+    <label>
+      <input type="checkbox" id="lowConfidence">
+      Low confidence (только Party)
+    </label>
+  </div>
+
+  <div id="opt-party" class="opt">
+    <label>
+      <input type="checkbox" id="partyWithClient">
+      В пати с клиентом +50% (LP)
+    </label>
+  </div>
+
+  <div id="opt-highmmr" class="opt">
+    <label>
+      <input type="checkbox" id="highMmrAccount">
+      Аккаунт 7500+ MMR (порядка) +30%
+    </label>
+  </div>
 
   <!-- Маржа -->
   <label>Твоя маржа (%)</label>
@@ -43,29 +71,79 @@
 
   <!-- Результат -->
   <div id="result"></div>
+
+  <div class="divider"></div>
+
+  <h3>Комиссия FanPay 50/50</h3>
+  <div class="muted">Вводишь сумму, которую хочешь получить «чистой» (без комиссии). Ниже — сколько заплатит покупатель при 100% комиссии на тебе и какую сумму выставлять при делёжке 50/50.</div>
+  <label>Сумма (чистая)</label>
+  <input id="fpSum" type="number" value="100" min="1">
+  <button id="fpCalc">Посчитать комиссию</button>
+  <div id="fpResult"></div>
 </div>
 
 <script src="config.js"></script>
 <script src="calc.js"></script>
 <script>
   const typeEl = document.getElementById("type");
+  const catEl = document.getElementById("category");
   const fromEl = document.getElementById("from");
   const toEl = document.getElementById("to");
   const doublesEl = document.getElementById("doubles");
   const lowEl = document.getElementById("lowConfidence");
+  const partyEl = document.getElementById("partyWithClient");
+  const highMmrEl = document.getElementById("highMmrAccount");
   const marginEl = document.getElementById("margin");
   const resultEl = document.getElementById("result");
   const toLabel = document.getElementById("to-label");
+  const fromLabel = document.getElementById("from-label");
+
+  const optDoubles = document.getElementById("opt-doubles");
+  const optLow = document.getElementById("opt-low");
+  const optParty = document.getElementById("opt-party");
+  const optHigh = document.getElementById("opt-highmmr");
 
   // Меняем подпись поля "to" в зависимости от типа
   typeEl.onchange = () => {
+    // reset
+    doublesEl.checked = false;
+    lowEl.checked = false;
+    partyEl.checked = false;
+    highMmrEl.checked = false;
+
+    optDoubles.style.display = "none";
+    optLow.style.display = "none";
+    optParty.style.display = "none";
+    optHigh.style.display = "none";
+
     if (typeEl.value === "mmr") {
       toLabel.innerText = "Целевой MMR";
-      lowEl.checked = false;
-      lowEl.disabled = true;
+      fromLabel.innerText = "Текущий MMR";
+      optDoubles.style.display = "block";
     } else {
-      toLabel.innerText = "Количество побед";
-      lowEl.disabled = false;
+      if (typeEl.value === "party") {
+        toLabel.innerText = "Количество побед";
+        fromLabel.innerText = "Текущий MMR";
+        optDoubles.style.display = "block";
+        optLow.style.display = "block";
+      }
+
+      if (typeEl.value === "calib") {
+        toLabel.innerText = "Количество побед";
+        fromLabel.innerText = "Текущий MMR";
+      }
+
+      if (typeEl.value === "lp") {
+        toLabel.innerText = "Количество LP (1 LP = 1 игра)";
+        fromLabel.innerText = "MMR аккаунта";
+        optParty.style.display = "block";
+      }
+
+      if (typeEl.value === "behavior") {
+        toLabel.innerText = "Целевая порядочность";
+        fromLabel.innerText = "Текущая порядочность";
+        optHigh.style.display = "block";
+      }
     }
   };
 
@@ -78,17 +156,50 @@
       to: +toEl.value,
       doubles: doublesEl.checked,
       lowConfidence: lowEl.checked,
+      partyWithClient: partyEl.checked,
+      highMmrAccount: highMmrEl.checked,
+      category: catEl.value,
       margin: +marginEl.value / 100
     });
 
     resultEl.innerHTML = `
       <div class="line"><span>Фикс</span><span>${res.fix} ₽</span></div>
       <div class="line"><span>Бустеру</span><span>${res.booster} ₽</span></div>
-      <div class="line warn"><span>Расходы (FanPay)</span><span>${res.fanpay} ₽</span></div>
+      <div class="line warn"><span>Комиссия FanPay (твоя 50%)</span><span>${res.fanpay} ₽</span></div>
       <div class="line"><span>Клиенту</span><b>${res.client} ₽</b></div>
       <div class="line profit"><span>Твоя прибыль</span><span>${res.profit} ₽</span></div>
+      <div class="line small"><span>Коэфф. категории</span><span>${res.coeff}</span></div>
     `;
   };
+
+  // FanPay split calc
+  const fpSumEl = document.getElementById("fpSum");
+  const fpResEl = document.getElementById("fpResult");
+  document.getElementById("fpCalc").onclick = () => {
+    const sum = +fpSumEl.value;
+    const out = calcFanPaySplit(sum);
+    const edu = out.education;
+    const boo = out.boost;
+    fpResEl.innerHTML = `
+      <div class="grid2">
+        <div class="card">
+          <div class="cardTitle">Обучение</div>
+          <div class="line"><span>Коэфф.</span><span>${edu.coeff}</span></div>
+          <div class="line"><span>Покупатель (100% комка на тебе)</span><b>${edu.buyer100} ₽</b></div>
+          <div class="line"><span>Выставлять (50/50)</span><b>${edu.list5050} ₽</b></div>
+        </div>
+        <div class="card">
+          <div class="cardTitle">Буст</div>
+          <div class="line"><span>Коэфф.</span><span>${boo.coeff}</span></div>
+          <div class="line"><span>Покупатель (100% комка на тебе)</span><b>${boo.buyer100} ₽</b></div>
+          <div class="line"><span>Выставлять (50/50)</span><b>${boo.list5050} ₽</b></div>
+        </div>
+      </div>
+      <div class="muted">Подсказка: большие суммы чаще выгоднее в «Обучении», маленькие — в «Бусте» (разница меньше).</div>
+    `;
+  };
+
+  document.getElementById("fpCalc").click();
 </script>
 
 </body>
