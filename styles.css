@@ -12,12 +12,16 @@
 =============================== */
 body {
   min-height: 100vh;
-  background: #1e1f24; /* не супер чёрный */
+  background:
+    radial-gradient(1200px 800px at 15% 10%, rgba(96,165,250,0.18), transparent 60%),
+    radial-gradient(900px 600px at 85% 30%, rgba(52,211,153,0.10), transparent 55%),
+    #1e1f24; /* не супер чёрный */
   color: #e5e7eb;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 22px;
 }
 
 /* ===============================
@@ -25,7 +29,7 @@ body {
 =============================== */
 .box {
   width: 100%;
-  max-width: 560px;
+  max-width: 860px;
   background: #2a2c33;
   border-radius: 14px;
   padding: 22px;
@@ -34,13 +38,52 @@ body {
     inset 0 0 0 1px rgba(255,255,255,0.04);
 }
 
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.pill {
+  font-size: 12px;
+  letter-spacing: .2px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: #cdd3e1;
+}
+
 /* ===============================
    TITLE
 =============================== */
 .box h2 {
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 14px;
+}
+
+.panel {
+  background: rgba(0,0,0,0.10);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: rgba(229,231,235,0.70);
+  margin-bottom: 10px;
 }
 
 /* ===============================
@@ -98,6 +141,30 @@ button {
   transition: transform .15s ease, box-shadow .15s ease;
 }
 
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.btnSecondary {
+  margin-top: 0;
+  width: auto;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: #e5e7eb;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btnSecondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
 button:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(96,165,250,0.35);
@@ -119,6 +186,10 @@ button:active {
   border: 1px solid #3a3d46;
   font-size: 14px;
   line-height: 1.6;
+}
+
+.resultEmpty {
+  opacity: 0.75;
 }
 
 /* строки результата */
@@ -194,6 +265,7 @@ button:active {
 
 @media (max-width: 720px) {
   .grid2 { grid-template-columns: 1fr; }
+  .layout { grid-template-columns: 1fr; }
 }
 
 /* ===============================
@@ -201,7 +273,6 @@ button:active {
 =============================== */
 @media (max-width: 480px) {
   .box {
-    margin: 16px;
     padding: 18px;
   }
 }

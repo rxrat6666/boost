@@ -169,13 +169,17 @@ function calculate(data) {
   const feeMine = feeTotal * FANPAY_SPLIT;        // твоя часть комиссии (50%)
   const cost = booster + feeMine;                 // фикса + комка(50/50)
 
+  // Выплата бустеру при 50/50: база бустера + его доля комиссии
+  // (чтобы в выводе было "бустеру + комка", как просили)
+  const boosterPayout = booster + feeMine;
+
   // Цена клиенту: фикса + комка(50/50) + маржа
   const client = cost * (1 + data.margin);
 
   return {
     fix: Math.round(fix),
     booster: Math.round(booster),
-    fanpay: Math.round(feeMine),
+    boosterPayout: Math.round(boosterPayout),
     client: Math.round(client),
     profit: Math.round(client - cost),
     coeff: round2(coeff)

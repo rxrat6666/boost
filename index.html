@@ -8,10 +8,17 @@
 <body>
 
 <div class="box">
-  <h2>Dota 2 Boost</h2>
+  <div class="header">
+    <h2>Dota 2 Boost</h2>
+    <div class="pill">calculator</div>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
 
   <!-- Тип услуги -->
-  <label>Тип буста</label>
+  <div class="sectionTitle">Услуга</div>
+  <label>Тип</label>
   <select id="type">
     <option value="mmr">MMR Boost (передача аккаунта)</option>
     <option value="party">Party Boost (игра с клиентом)</option>
@@ -21,7 +28,7 @@
   </select>
 
   <!-- Категория FanPay -->
-  <label>Категория FanPay (комиссия разная)</label>
+  <label>Категория FanPay</label>
   <select id="category">
     <option value="education">Обучение</option>
     <option value="boost" selected>Буст</option>
@@ -64,21 +71,28 @@
   </div>
 
   <!-- Маржа -->
+  <div class="sectionTitle">Цена</div>
   <label>Твоя маржа (%)</label>
   <input id="margin" type="number" value="25" min="0">
 
   <button id="calc">Рассчитать</button>
 
-  <!-- Результат -->
-  <div id="result"></div>
+  </div>
+
+  <div class="panel">
+    <div class="sectionTitle">Результат</div>
+    <div id="result" class="resultEmpty">Нажми «Рассчитать»</div>
+  </div>
+  </div>
 
   <div class="divider"></div>
 
-  <h3>Комиссия FanPay 50/50</h3>
-  <div class="muted">Вводишь сумму, которую хочешь получить «чистой» (без комиссии). Ниже — сколько заплатит покупатель при 100% комиссии на тебе и какую сумму выставлять при делёжке 50/50.</div>
+  <div class="sectionTitle">FanPay 50/50</div>
   <label>Сумма (чистая)</label>
-  <input id="fpSum" type="number" value="100" min="1">
-  <button id="fpCalc">Посчитать комиссию</button>
+  <div class="row">
+    <input id="fpSum" type="number" value="100" min="1">
+    <button id="fpCalc" class="btnSecondary">Посчитать</button>
+  </div>
   <div id="fpResult"></div>
 </div>
 
@@ -162,10 +176,11 @@
       margin: +marginEl.value / 100
     });
 
+    resultEl.classList.remove("resultEmpty");
     resultEl.innerHTML = `
       <div class="line"><span>Фикс</span><span>${res.fix} ₽</span></div>
-      <div class="line"><span>Бустеру</span><span>${res.booster} ₽</span></div>
-      <div class="line warn"><span>Комиссия FanPay (твоя 50%)</span><span>${res.fanpay} ₽</span></div>
+      <div class="line"><span>Бустеру (база)</span><span>${res.booster} ₽</span></div>
+      <div class="line warn"><span>Выплата бустеру (50/50)</span><span>${res.boosterPayout} ₽</span></div>
       <div class="line"><span>Клиенту</span><b>${res.client} ₽</b></div>
       <div class="line profit"><span>Твоя прибыль</span><span>${res.profit} ₽</span></div>
       <div class="line small"><span>Коэфф. категории</span><span>${res.coeff}</span></div>
@@ -195,7 +210,6 @@
           <div class="line"><span>Выставлять (50/50)</span><b>${boo.list5050} ₽</b></div>
         </div>
       </div>
-      <div class="muted">Подсказка: большие суммы чаще выгоднее в «Обучении», маленькие — в «Бусте» (разница меньше).</div>
     `;
   };
 
